@@ -1,9 +1,12 @@
 import 'package:adoptme/models/package_details.dart';
+import 'package:adoptme/provider/VeterinariaFormProvider.dart';
+import 'package:adoptme/services/VeterService.dart';
 import 'package:adoptme/utils/styles.dart';
 import 'package:adoptme/widgets/back_button.dart';
 import 'package:adoptme/widgets/vet_card.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class VetPage extends StatefulWidget {
   const VetPage({Key? key}) : super(key: key);
@@ -40,6 +43,12 @@ class _VetPageState extends State<VetPage> {
 
   @override
   Widget build(BuildContext context) {
+    final veterinariaForm = Provider.of<VeterService>(context);
+
+    print("HOLA VETER");
+    print(veterinariaForm.veterinarias.length);
+    print(veterinariaForm.veterinarias);
+
     final veterinaryPackage = [
       {
         'title': 'veterinaria (online)',

@@ -1,10 +1,12 @@
 import 'package:adoptme/pages/home.dart';
 import 'package:adoptme/pages/login.dart';
+import 'package:adoptme/provider/LoginFormProvider.dart';
 import 'package:adoptme/utils/layouts.dart';
 import 'package:adoptme/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class GetStarted extends StatelessWidget {
   const GetStarted({Key? key}) : super(key: key);
@@ -81,20 +83,27 @@ class GetStarted extends StatelessWidget {
                 Opacity(
                   opacity: value,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => const Login()));
-                    },
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      shape: const StadiumBorder(),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 50, vertical: 20),
-                    ),
-                    child: const Text('🐶 iniciar sesion 🐹 ',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 17)),
-                  ),
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (_) => const Login()));
+                      },
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        shape: const StadiumBorder(),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 50, vertical: 20),
+                      ),
+                      child: Column(
+                        children: [
+                          Text('🐶 iniciar sesion 🐹 ',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 12)),
+                          ChangeNotifierProvider(
+                            create: (_) => LoginFormProvider(),
+                            child: Login(),
+                          )
+                        ],
+                      )),
                 )
               ],
             );

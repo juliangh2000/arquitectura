@@ -1,17 +1,23 @@
 import 'package:adoptme/pages/get_started.dart';
 import 'package:adoptme/pages/home.dart';
+import 'package:adoptme/provider/LoginFormProvider.dart';
+import 'package:adoptme/services/AuthService.dart';
 import 'package:adoptme/utils/layouts.dart';
 import 'package:adoptme/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class Login extends StatelessWidget {
   const Login({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final loginForm = Provider.of<LoginFormProvider>(context);
+
     return Material(
+      key: loginForm.formKey,
       child: TweenAnimationBuilder<double>(
           tween: Tween(begin: 0, end: 1),
           duration: const Duration(milliseconds: 700),
@@ -48,18 +54,38 @@ class Login extends StatelessWidget {
                 ),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Ingresar correo'),
+                  onChanged: ((value) => loginForm.email = value),
                 ),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Ingresar contraseña'),
+                  onChanged: ((value) => loginForm.password = value),
                 ),
                 const Gap(30),
                 Opacity(
                   opacity: value,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => const Home()));
-                    },
+                    onPressed: loginForm.estaCargando
+                        ? null
+                        : () async {
+                            FocusScope.of(context).unfocus();
+                            final authService = Provider.of<AuthService>(
+                                context,
+                                listen: false);
+
+                            //loginForm.estaCargando = true;
+                            final String? errorMessage = await authService
+                                .login(loginForm.email, loginForm.password);
+                            print(errorMessage);
+                            if (errorMessage == null) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => const Home()));
+                            } else {
+                              //NotificationsService.showSnackBar(errorMessage);
+                              loginForm.estaCargando = false;
+                            }
+                          },
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
                       shape: const StadiumBorder(),
